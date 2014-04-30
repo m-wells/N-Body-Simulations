@@ -32,7 +32,7 @@ end
 
 
 
-function total_accel_on_i(i::Int64,state::Array{Float64,2},mass::Array{Float64,1},G::Float64)
+function total_accel_on_i(i::Int64,state::Array{Float64,2},mass::Array{Float64},G::Float64)
     #the acceleration needs to be determined from the current collection of all the particles
     
     numparticles = size(state)[1]; #the number of rows of state
@@ -70,7 +70,7 @@ end
 
 
 
-function leapfrog_step_for_i(i::Int64,state::Array{Float64,2},mass::Array{Float64,1},dt::Float64,G::Float64)
+function leapfrog_step_for_i(i::Int64,state::Array{Float64,2},mass::Array{Float64},dt::Float64,G::Float64)
     #take a step updating the positions and the velocities for particle i
     
     #the current position of particle i
@@ -125,7 +125,7 @@ end
 
 
 
-function update_state(state::Array{Float64,2},mass::Array{Float64,1},dt::Float64,G::Float64)
+function update_state_ser(state::Array{Float64,2},mass::Array{Float64},dt::Float64,G::Float64)
     #leapfrog update for all particles
     
     #save current state so that we don't start updating until the next state has been computed for all particles
@@ -145,7 +145,7 @@ end
 
 
 
-function integrate_leapfrog(initialState::Array{Float64,2},mass::Array{Float64,1},N::Int64,dt::Float64,G::Float64)
+function integrate_leapfrog_ser(initialState::Array{Float64,2},mass::Array{Float64},N::Int64,dt::Float64,G::Float64)
     #this performs the integration with a step size of dt and N number of steps
     
     numparticles = size(initialState)[1]; #the number of rows of state
@@ -172,7 +172,7 @@ function integrate_leapfrog(initialState::Array{Float64,2},mass::Array{Float64,1
     z[:,1] = initialState[:,3];
     
     for n=2:N
-        state = update_state(state,mass,dt,G);
+        state = update_state_ser(state,mass,dt,G);
         x[:,n] = state[:,1];
         y[:,n] = state[:,2];
         z[:,n] = state[:,3];
