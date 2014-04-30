@@ -33,3 +33,28 @@ function write_initialState(initialState::Array, inputname::String)
 	writecsv(filename, initialState)
 	@assert isfile(filename)
 end
+
+
+
+function write_pos_out(pos::Array, inputname::String)
+	#A function that writes the array x to a file **filename** in a CSV-file format
+
+	x = pos[:,:,1];
+	y = pos[:,:,2];
+	z = pos[:,:,3];
+
+	filename=string("../pos_solutions/",inputname,"_x",".csv");
+	writecsv(filename,x)
+	@assert isfile(filename)
+	println("Successfully printed:",filename)
+
+	filename=string("../pos_solutions/",inputname,"_y",".csv");
+	writecsv(filename,y)
+	@assert isfile(filename)
+	println("Successfully printed:",filename)
+
+	filename=string("../pos_solutions/",inputname,"_z",".csv");
+	writecsv(filename,z)
+	@assert isfile(filename)
+	println("Successfully printed:",filename)
+end
