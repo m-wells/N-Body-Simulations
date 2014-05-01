@@ -1,0 +1,11 @@
+parallel calculation
+Using 3 processes
+Using 2 workers
+masses successfully generated within limits
+positions successfully generated within limits
+positions successfully generated within limits
+positions successfully generated within limits
+velocities successfully generated within limits
+velocities successfully generated within limits
+velocities successfully generated within limits
+elapsed time: 16.748904247 seconds

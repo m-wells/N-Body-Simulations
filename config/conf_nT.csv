@@ -4,8 +4,8 @@ minpos 		,-100000
 maxpos 		,100000
 minvel 		,-10
 maxvel 		,10
-num_particles	,840
+num_particles	,8400
 seed  		,42
-numSteps	,100
+numSteps	,10
 dt    		,.5
 G     		,100
