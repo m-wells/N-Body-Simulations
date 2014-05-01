@@ -76,4 +76,5 @@ function launch_leapfrog_ser(config::String)
     tic();
     positions=integrate_leapfrog_ser(initialState,mass,numSteps,dt,G);
     toc();
+    return positions
 end

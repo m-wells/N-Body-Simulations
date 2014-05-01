@@ -2,36 +2,13 @@ function update_state_par(state::SharedArray{Float64,2},mass::Array{Float64},dt:
     #leapfrog update for all particles in parallel
     
     numparticles = size(state)[1]; #the number of rows of state
+    #should think how to do this when particles is not evenly divisible by procs
+    particles_per_proc=int(numparticles/nworkers());
+    ilist=int(linspace(1,particles_per_proc,particles_per_proc));
     #initialize next_state to store values in
-    next_state = SharedArray(Float64,(numparticles,9),init=false);
-    #next_state = Array(Float64,numparticles,9);
+    next_state = SharedArray(Float64,(numparticles,9));
 
-    #loop over all particles
-    
-     #
-     #   for i=1:numparticles
-     #   	
-     #   	retval = map(fetch,{  (@spawnat worker_ids[i%num_workers+1] leapfrog_step_for_i(i,state,mass,dt,G))});
-     #   	next_state[i,:] = transpose(retval[1]);
-     #   	#@printf("particle %d on worker %d\n",i,worker_ids[i%num_workers+1])
-     #   end
-
-	#println(typeof(next_state))
-	retval = map(fetch,{  (@spawnat procs()[i%nprocs()+1] leapfrog_step_for_i(i,state,mass,dt,G)) for i=1:numparticles});
-	#retval = map(fetch,{  (@spawnat workers()[i%nworkers()+1] leapfrog_step_for_i(i,state,mass,dt,G)) for i=1:numparticles});
-	#next_state = reshape(1:numparticles, numparticles, 9)
-	#println(typeof(retval))
-	#test = convert(Array{Float64,1},retval)
-	for i=1:numparticles
-	break
-	next_state[i,:] = retval[i];
-	#println(next_state[i,:])
-	end
-	#println(typeof(next_state))
-	#println(" ")
-	#print(retval[1][1:3])
-	#next_state[:,:] = transpose(retval[1]);
-	#@printf("particle %d on worker %d\n",i,worker_ids[i%num_workers+1])
+    map(fetch,{@spawnat workers()[i] leapfrogStepForIList!(ilist.+particles_per_proc*(i-1),state,next_state,mass,dt,G) for i=1:nworkers()})
     
     return next_state;
 end
@@ -66,11 +43,10 @@ function integrate_leapfrog_par(initialState::Array{Float64,2},mass::Array{Float
     z[:,1] = initialState[:,3];
     
     for n=2:numSteps
-	#@printf("step=%d\n",n)
-        state = update_state_par(sharedState,mass,dt,G);
-        x[:,n] = state[:,1];
-        y[:,n] = state[:,2];
-        z[:,n] = state[:,3];
+        sharedState = update_state_par(sharedState,mass,dt,G);
+        x[:,n] = sharedState[:,1];
+        y[:,n] = sharedState[:,2];
+        z[:,n] = sharedState[:,3];
     end
     
     #initialize a 3-dimensional array
@@ -79,7 +55,7 @@ function integrate_leapfrog_par(initialState::Array{Float64,2},mass::Array{Float
     positions[:,:,2] = y;
     positions[:,:,3] = z;
     
-    return positions
+    return positions;
 end
 
 
@@ -90,12 +66,13 @@ function launch_leapfrog_par(config::String,numProcs::Int64)
 
     set_procs(numProcs);
     require("leapfrog_2order_functions.jl")
+    #@everywhere include("leapfrog_2order_functions.jl")
     initialSystem=generate_initialSystem_from_config(config);
 
     mass=initialSystem[:,1];
     initialState=initialSystem[:,2:7];
 
-    configParameters=retrieve_parameters_from_config(config)
+    configParameters=retrieve_parameters_from_config(config);
     numSteps=int(configParameters[9]);
     dt=configParameters[10];
     G=configParameters[11];
@@ -103,4 +80,5 @@ function launch_leapfrog_par(config::String,numProcs::Int64)
     tic();
     positions=integrate_leapfrog_par(initialState,mass,numSteps,dt,G);
     toc();
+    return positions;
 end
