@@ -59,44 +59,78 @@ end
 
     using PyPlot;
 
-function movie_launch_leapfrog_ser(config::String)
+function movie_launch_leapfrog_ser(n_part::Int64)
     include("init_tools.jl")
     #tic();
-
-
     include("leapfrog_2order_functions.jl")
-    #initialSystem=generate_initialSystem_from_config(config);
-    initialSystem=read_setup_from_file("test2particle")
+    #-------------------------------
+    #-------------------------------
+    #-------------------------------
+    #-------------------------------
+    #FOR 3 PARTICLES:: in 3part_mov.csv
+    if(n_part ==3)
+        initialSystem=read_setup_from_file("3part_mov")
+        numSteps=100000;
+        dt = 0.5;
+        G = 0.1;
+        #-----------------------------
 
-    mass=initialSystem[:,1];
-    initialState=initialSystem[:,2:7];
-    println("mass")
-    println(mass)
-    println("intState");
-    println(initialState)
+        mass=initialSystem[:,1];
+        initialState=initialSystem[:,2:7];
+        println("mass")
+        println(mass)
+        println("intState");
+        println(initialState)
 
-    #configParameters=retrieve_parameters_from_config(config)
-    #numSteps=int(configParameters[9]);
-    #dt=configParameters[10];
-    #G=configParameters[11];
-    numSteps=1000000;
-    dt = 1.;
-    G = 100.;
+        tic();
+        positions=integrate_leapfrog_ser(initialState,mass,numSteps,dt,G);
+        toc();
 
-    tic();
-    positions=integrate_leapfrog_ser(initialState,mass,numSteps,dt,G);
-    toc();
-
-    numparticles = size(initialState)[1]; #the number of rows of state
-    linesize=mass./(maximum(mass))
-    for i=1:numparticles
-        x=transpose(positions[i,:,1]);
-        y=transpose(positions[i,:,2]);
-        #z=transpose(pos[i,:,3]);
-       #print(x)
-        plot(x,y,linewidth=10*linesize[i])
+        numparticles = size(initialState)[1]; #the number of rows of state
+        linesize=mass./(maximum(mass))
+        for i=1:numparticles
+            x=transpose(positions[i,:,1]);
+            y=transpose(positions[i,:,2]);
+            #z=transpose(positions[i,:,3]);
+           #print(x)
+            plot(x,y,linewidth=10*linesize[i])
+        end
+        write_pos_out_interval(positions,500,"3part_mov")
     end
-    xlim(-100000,100000)
-    ylim(-100000,100000)
-    write_pos_out_interval(positions,5000,"2part_mov")
+    ##-----------------------------
+    #-------------------------------
+    #-------------------------------
+    #FOR 2 PARTICLES:: in 2part_mov.csv
+    if(n_part ==2)
+        initialSystem=read_setup_from_file("2part_mov")
+        numSteps=1000000;
+        dt = 1.;
+        G = 100.;
+        #-----------------------------
+
+        mass=initialSystem[:,1];
+        initialState=initialSystem[:,2:7];
+        println("mass")
+        println(mass)
+        println("intState");
+        println(initialState)
+
+        tic();
+        positions=integrate_leapfrog_ser(initialState,mass,numSteps,dt,G);
+        toc();
+
+        numparticles = size(initialState)[1]; #the number of rows of state
+        linesize=mass./(maximum(mass))
+        for i=1:numparticles
+            x=transpose(positions[i,:,1]);
+            y=transpose(positions[i,:,2]);
+            #z=transpose(positions[i,:,3]);
+           #print(x)
+            plot(x,y,linewidth=10*linesize[i])
+            xlim(-100000,100000)
+            ylim(-100000,100000)
+        end
+        write_pos_out_interval(positions,5000,"2part_mov")
+    end
+
 end

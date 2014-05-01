@@ -48,7 +48,6 @@ data_x = loadtxt(name_x,comments="#",delimiter=",",usecols=(0,1))
 data_y = loadtxt(name_y,comments="#",delimiter=",",usecols=(0,1))
 #data_z = loadtxt(name_z,comments="#",delimiter=",",usecols=(0,1))
 
-
 #-------------------------------------------------
 
 #------------Figure Layout--------------
@@ -77,12 +76,18 @@ ax.grid()
 k = 1
 for i in range(0,n_timesteps,k):  
     print(i)
+
     ax.set_xlim(-100000,100000)
     ax.set_ylim(-100000,100000)
+    ax.set_title("2 Particles: N=1000000, dT=1., G=100")
+    ax.set_xlabel(r'$x$',size="x-large")
+    ax.set_ylabel(r'$y$',size="x-large")
+    ax.minorticks_on()
+    ax.grid()
     print(data_x[i,0],data_y[i,0])
     print(data_x[i,1],data_y[i,1])
-    ax.plot(data_x[i,0],data_y[i,0],color="blue",marker=".",markersize=16,linewidth=0,linestyle="-",label=r"$M_1=100$")
-    ax.plot(data_x[i,1],data_y[i,1],color="green",marker=".",markersize=16,linewidth=0,linestyle="-",label=r"$M_1=100$")
+    ax.plot(data_x[i,0],data_y[i,0],color="blue",marker=".",markersize=16,linewidth=0,linestyle="-",label=r"$M_1=8305$")
+    ax.plot(data_x[i,1],data_y[i,1],color="green",marker=".",markersize=20,linewidth=0,linestyle="-",label=r"$M_2=9895$")
     legend(loc="lower right",prop={'size':16})
     #ax.plot(data_x[i,2],data_y[i,2],color="red",marker=".",linewidth=1,linestyle="-",label="x")
     fname = '_tmp%0005d.png'%i
@@ -92,7 +97,7 @@ for i in range(0,n_timesteps,k):
     ax.clear()
 
 print 'Making movie animation.mpg - this make take a while'
-os.system("mencoder 'mf://_tmp*.png' -mf type=png:fps=10 -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o animation.mpg")
+os.system("mencoder 'mf://_tmp*.png' -mf type=png:fps=10 -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o 2particles.mpg")
 os.system("rm *.png")
 
 
