@@ -1,0 +1,11 @@
+minmass		,10
+maxmass		,20
+minpos 		,-100000
+maxpos 		,100000
+minvel 		,-10
+maxvel 		,10
+num_particles	,49
+seed  		,42
+numSteps	,1000000
+dt    		,.5
+G     		,100

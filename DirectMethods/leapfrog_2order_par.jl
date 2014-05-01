@@ -61,12 +61,12 @@ end
 
 
 function launch_leapfrog_par(config::String,numProcs::Int64)
-    include("init_tools.jl")
+    include("../init_tools.jl")
     #tic();
 
     set_procs(numProcs);
     require("leapfrog_2order_functions.jl")
-    #@everywhere include("leapfrog_2order_functions.jl")
+
     initialSystem=generate_initialSystem_from_config(config);
 
     mass=initialSystem[:,1];

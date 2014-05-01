@@ -102,7 +102,7 @@ end
 
 function read_config_from_file(inputname::String)
 	#A function that reads the file "inputname" which assumes that the data is arranged in a CSV format
-	filename=string("config/",inputname,".csv");
+	filename=string("../config/",inputname,".csv");
 	@assert isfile(filename)
 	setup=readcsv(filename);
 	return setup
