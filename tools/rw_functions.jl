@@ -8,6 +8,16 @@ end
 
 
 
+function read_config_from_file(inputname::String)
+	#A function that reads the file "inputname" which assumes that the data is arranged in a CSV format
+	filename=string("../config/",inputname,".csv");
+	@assert isfile(filename)
+	setup=readcsv(filename);
+	return setup
+end
+
+
+
 function get_mass(setup::Array{Float64,2})
 	#returns the mass from the setup array which is a user defined file located with initialStates folder.
 	mass=transpose(setup[:,1])
@@ -58,3 +68,14 @@ function write_pos_out(pos::Array, inputname::String)
 	@assert isfile(filename)
 	println("Successfully printed:",filename)
 end
+
+
+
+function read_config_from_file(inputname::String)
+	#A function that reads the file "inputname" which assumes that the data is arranged in a CSV format
+	filename=string("config/",inputname,".csv");
+	@assert isfile(filename)
+	setup=readcsv(filename);
+	return setup
+end
+

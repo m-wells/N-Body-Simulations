@@ -1,10 +1,8 @@
-function random_array(minmax,length::Int64,seed::Int64)
-    #generates a random array of length with values between +/- minmax
-    srand(seed);
-    ret_array = zeros(length);
-    rand!(ret_array)
-    
-    return 2minmax.*(ret_array.-0.5)
+function retrieve_parameters_from_config(config_name::String)
+    parameters=read_config_from_file(config_name);
+    @assert size(parameters)[1] == 11
+    @assert size(parameters)[2] == 2
+    return parameters[:,2]
 end
 
 
@@ -79,7 +77,7 @@ end
 
 
 
-function generate_initialState(minmass,maxmass,minpos,maxpos,minvel,maxvel,num_particles::Int64,seed::Int64)
+function generate_initialSystem(minmass,maxmass,minpos,maxpos,minvel,maxvel,num_particles::Int64,seed::Int64)
     #generates an initial state
     mass = generate_masses(minmass,maxmass,num_particles,seed)
     x = generate_positions(minpos,maxpos,num_particles,seed+1)
@@ -100,4 +98,36 @@ function generate_initialState(minmass,maxmass,minpos,maxpos,minvel,maxvel,num_p
     vz = vz .- comp_mass_vel(vz,mass);
     
     initialState = hcat(mass,x,y,z,vx,vy,vz)
+    return initialState
+end
+
+
+
+function generate_initialSystem_from_config(config_name::String)
+    parameters = retrieve_parameters_from_config(config_name);
+    
+    minmass = parameters[1];
+    maxmass = parameters[2];
+    minpos = parameters[3];
+    maxpos = parameters[4];
+    minvel = parameters[5];
+    maxvel = parameters[6];
+    num_particles = int(parameters[7]);
+    seed = int(parameters[8]);
+    numSteps = int(parameters[9]);
+    dt = parameters[10];
+    G = parameters[11];
+
+
+    initialState = generate_initialSystem(minmass,maxmass,minpos,maxpos,minvel,maxvel,num_particles,seed)
+    return initialState
+end
+
+
+
+function generate_sharedInitialSystem_from_config(config_name::String)
+    initialSystem=generate_InitialSystem_from_config(config_name);
+    sharedInitialState=SharedArray(Float64,(size(initialSystem)[1],size(initialSystem)[2]))
+    sharedInitialState[:,:]=initialSystem[:,:]
+    return sharedInitialState
 end
