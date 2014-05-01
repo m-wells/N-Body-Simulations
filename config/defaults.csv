@@ -8,4 +8,4 @@ num_particles	,7000
 seed  		,42
 numSteps	,10
 dt    		,.5
-G     		,1000
+G     		,100
