@@ -1,0 +1,3 @@
+error: could not lock config file /gpfs/home/maw461/.gitconfig: File exists
+error: could not lock config file /gpfs/home/maw461/.gitconfig: File exists
+=>> PBS: job killed: walltime 3621 exceeded limit 3600
