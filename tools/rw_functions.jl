@@ -1,6 +1,7 @@
 function read_setup_from_file(inputname::String)
 	#A function that reads the file "inputname" which assumes that the data is arranged in a CSV format
-	filename=string("../initialStates/",inputname,".csv");
+	filename=string("initialStates/",inputname,".csv");
+        println("filename, ",filename)
 	@assert isfile(filename)
 	setup=readcsv(filename);
 	return setup
@@ -48,22 +49,50 @@ end
 
 function write_pos_out(pos::Array, inputname::String)
 	#A function that writes the array x to a file **filename** in a CSV-file format
+        #We need to transpose this
 
-	x = pos[:,:,1];
-	y = pos[:,:,2];
-	z = pos[:,:,3];
+	x = transpose(pos[:,:,1]);
+	y = transpose(pos[:,:,2]);
+	z = transpose(pos[:,:,3]);
 
-	filename=string("../pos_solutions/",inputname,"_x",".csv");
+	filename=string("pos_solutions/",inputname,"_x",".csv");
 	writecsv(filename,x)
 	@assert isfile(filename)
 	println("Successfully printed:",filename)
 
-	filename=string("../pos_solutions/",inputname,"_y",".csv");
+	filename=string("pos_solutions/",inputname,"_y",".csv");
 	writecsv(filename,y)
 	@assert isfile(filename)
 	println("Successfully printed:",filename)
 
-	filename=string("../pos_solutions/",inputname,"_z",".csv");
+	filename=string("pos_solutions/",inputname,"_z",".csv");
+	writecsv(filename,z)
+	@assert isfile(filename)
+	println("Successfully printed:",filename)
+end
+
+function write_pos_out_interval(pos::Array, interval::Int64, inputname::String)
+	#A function that writes the array x to a file **filename** in a CSV-file format
+        #We need to transpose this
+
+	x = transpose(pos[:,:,1]);
+	y = transpose(pos[:,:,2]);
+	z = transpose(pos[:,:,3]);
+        x = x[1:interval:end,:]
+        y = y[1:interval:end,:]
+        z = z[1:interval:end,:]
+
+	filename=string("pos_solutions/",inputname,"_x",".csv");
+	writecsv(filename,x)
+	@assert isfile(filename)
+	println("Successfully printed:",filename)
+
+	filename=string("pos_solutions/",inputname,"_y",".csv");
+	writecsv(filename,y)
+	@assert isfile(filename)
+	println("Successfully printed:",filename)
+
+	filename=string("pos_solutions/",inputname,"_z",".csv");
 	writecsv(filename,z)
 	@assert isfile(filename)
 	println("Successfully printed:",filename)
