@@ -1,0 +1,8 @@
+#!/bin/bash
+FILES=*.pbs
+for f in $FILES
+do
+  echo "Submitting $f file..."
+  # take action on each file. $f store current file name
+  qsub $f
+done

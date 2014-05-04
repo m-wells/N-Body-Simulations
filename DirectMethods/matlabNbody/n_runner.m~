@@ -1,0 +1,8 @@
+init_parts = csvread('');
+G=1;
+numsteps = 10;
+dt = 0.1;
+
+tic;
+results = leapfrog.integrate_leapfrog(init_parts,numsteps,dt,G);
+toc
