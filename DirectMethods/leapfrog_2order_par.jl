@@ -1,3 +1,15 @@
+function leapfrogStepForIList!(ilist::Array{Int64,1},state::SharedArray{Float64,2},next_state::SharedArray{Float64,2},mass::Array{Float64,1},dt::Float64,G::Float64)
+    #a parallel wrapper for leapfrog_step_for_i that will iterate over ilist and return the values
+
+    for i in 1:length(ilist);
+        next_state[ilist[i],:]=leapfrog_step_for_i(ilist[i],state,mass,dt,G);
+    end
+
+    #return next_state;
+end
+
+
+
 function update_state_par(state::SharedArray{Float64,2},mass::Array{Float64},dt::Float64,G::Float64)
     #leapfrog update for all particles in parallel
     
